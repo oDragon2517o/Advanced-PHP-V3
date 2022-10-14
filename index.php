@@ -1,7 +1,7 @@
 <?php
 
 
-
+//cam
 use src\some\path\Doctrine\Common\ClassLoader;
 use src\some\path\Doctrine\Common\Name;
 use src\some\path\namespace\package\Class\Name2;
