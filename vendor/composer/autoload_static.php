@@ -15,13 +15,14 @@ class ComposerStaticInit82e9bc5b9b04823056dc0ab0a40f04a1
         array (
             'Psr\\Container\\' => 14,
         ),
+        'G' => 
+        array (
+            'GeekBrains\\LevelTwo\\' => 20,
+            'GeekBrains\\LevelTwo1\\' => 21,
+        ),
         'F' => 
         array (
             'Faker\\' => 6,
-        ),
-        'A' => 
-        array (
-            'App\\' => 4,
         ),
     );
 
@@ -30,13 +31,17 @@ class ComposerStaticInit82e9bc5b9b04823056dc0ab0a40f04a1
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'GeekBrains\\LevelTwo\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+        'GeekBrains\\LevelTwo1\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src1',
+        ),
         'Faker\\' => 
         array (
             0 => __DIR__ . '/..' . '/fakerphp/faker/src/Faker',
-        ),
-        'App\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src',
         ),
     );
 

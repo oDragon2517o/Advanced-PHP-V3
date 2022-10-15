@@ -1,9 +1,10 @@
 {
-    "name": "evseev/advancedphp",
+    "name": "geekbrains/level_two",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "GeekBrains\\LevelTwo1\\": "src1/",
+            "GeekBrains\\LevelTwo\\": "src/"
         }
     },
     "authors": [

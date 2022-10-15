@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
+    'GeekBrains\\LevelTwo\\' => array($baseDir . '/src'),
+    'GeekBrains\\LevelTwo1\\' => array($baseDir . '/src1'),
     'Faker\\' => array($vendorDir . '/fakerphp/faker/src/Faker'),
-    'App\\' => array($baseDir . '/src'),
 );

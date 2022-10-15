@@ -1,8 +1,8 @@
 <?php
 
-namespace GeekBrains\Blog;
+namespace GeekBrains\LevelTwo\Blog;
 
-use GeekBrains\Person\Person;
+use GeekBrains\LevelTwo\Person\Person;
 
 class Post
 {

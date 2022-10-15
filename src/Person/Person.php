@@ -1,6 +1,6 @@
 <?php
 
-namespace GeekBrains\Person;
+namespace GeekBrains\LevelTwo\Person;
 
 use DateTimeImmutable;
 
