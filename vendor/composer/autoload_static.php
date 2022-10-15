@@ -19,10 +19,15 @@ class ComposerStaticInit82e9bc5b9b04823056dc0ab0a40f04a1
         array (
             'GeekBrains\\LevelTwo\\' => 20,
             'GeekBrains\\LevelTwo1\\' => 21,
+            'GeekBrains\\' => 11,
         ),
         'F' => 
         array (
             'Faker\\' => 6,
+        ),
+        'A' => 
+        array (
+            'ALL\\' => 4,
         ),
     );
 
@@ -39,9 +44,17 @@ class ComposerStaticInit82e9bc5b9b04823056dc0ab0a40f04a1
         array (
             0 => __DIR__ . '/../..' . '/src1',
         ),
+        'GeekBrains\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
         'Faker\\' => 
         array (
             0 => __DIR__ . '/..' . '/fakerphp/faker/src/Faker',
+        ),
+        'ALL\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
         ),
     );
 

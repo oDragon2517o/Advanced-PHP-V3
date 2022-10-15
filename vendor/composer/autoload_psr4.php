@@ -9,5 +9,7 @@ return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'GeekBrains\\LevelTwo\\' => array($baseDir . '/src'),
     'GeekBrains\\LevelTwo1\\' => array($baseDir . '/src1'),
+    'GeekBrains\\' => array($baseDir . '/src'),
     'Faker\\' => array($vendorDir . '/fakerphp/faker/src/Faker'),
+    'ALL\\' => array($baseDir . '/src'),
 );
