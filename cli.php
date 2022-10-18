@@ -1,49 +1,29 @@
 <?php
 
-// GeekBrains\LevelTwo\Person
-// use GeekBrains\Blog\Name;
 use GeekBrains\LevelTwo\Person\Name;
 use GeekBrains\Blog\Repositories\UsersRepository\InMemoryUsersRepository;
 use GeekBrains\Blog\Repositories\UsersRepository\UserNotFoundException;
+use GeekBrains\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\Blog\User;
+use GeekBrains\Blog\UUID;
+use GeekBrains\Blog\Commands\CreateUserCommand;
+use GeekBrains\Blog\Exceptions\CommandException;
+use GeekBrains\Blog\Exceptions\ArgumentsException;
+use GeekBrains\Blog\Commands\Arguments;
+use GeekBrains\Blog\Exceptions\AppException;
 
 require_once __DIR__ . '/vendor/autoload.php';
-
-
-// $user = new User('Ivan');
-// if ($user === 666) {
-//     //Что-то пошло не так
-// } else {
-//     // А здесь всё в порядке
-// }
-
-
-//Создаём объект репозитория
-$usersRepository = new InMemoryUsersRepository();
-
-//Добавляем в репозиторий несколько пользователей
-$usersRepository->save(new User(123, new Name('Ivan', 'Nikitin')));
-$usersRepository->save(new User(234, new Name('Anna', 'Petrova')));
-
+$usersRepository = new SqliteUsersRepository(
+    new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+);
+$command = new CreateUserCommand($usersRepository);
 try {
-    //Загружаем пользователя из репозитория
-    $user = $usersRepository->get(234);
-    print $user->getName();
-} catch (UserNotFoundException $e) {
-    print $e->getMessage();
+    // "Заворачиваем" $argv в объект типа Arguments
+    $command->handle(Arguments::fromArgv($argv));
 }
-
-
-// // use the factory to create a Faker\Generator instance
-// $faker = Faker\Factory::create();
-// // generate data by calling methods
-// echo $faker->name();
-// // 'Vince Sporer'
-// echo $faker->email();
-// // 'walter.sophia@hotmail.com'
-// echo $faker->text();
-// // 'Numquam ut mollitia at consequuntur inventore dolorem.'
-
-// for ($i = 0; $i < 3; $i++) {
-//     echo $faker->name() . "\n";
-// }
+// Так как мы добавили исключение ArgumentsException
+// имеет смысл обрабатывать все исключения приложения,
+// а не только исключение CommandException
+catch (AppException $e) {
+    echo "{$e->getMessage()}\n";
+}
