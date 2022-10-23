@@ -8,9 +8,13 @@ $baseDir = dirname($vendorDir);
 return array(
     'Symfony\\Polyfill\\Uuid\\' => array($vendorDir . '/symfony/polyfill-uuid'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
+    'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'GeekBrains\\LevelTwo\\' => array($baseDir . '/src'),
     'GeekBrains\\LevelTwo1\\' => array($baseDir . '/src1'),
+    'GeekBrains\\Blog\\' => array($baseDir . '/src'),
     'GeekBrains\\' => array($baseDir . '/src'),
     'Faker\\' => array($vendorDir . '/fakerphp/faker/src/Faker'),
+    'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
+    'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'ALL\\' => array($baseDir . '/src'),
 );
