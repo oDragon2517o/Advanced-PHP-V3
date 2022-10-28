@@ -1,14 +1,13 @@
 <?php
 
-namespace GeekBrains\Blog\Repositories\UsersRepository;
+namespace GeekBrains\LevelTwo\Blog\Repositories\UsersRepository;
 
-use GeekBrains\Blog\User;
-use GeekBrains\Blog\UUID;
+use GeekBrains\LevelTwo\Blog\User;
+use GeekBrains\LevelTwo\Blog\UUID;
 
 interface UsersRepositoryInterface
 {
     public function save(User $user): void;
     public function get(UUID $uuid): User;
-    // Добавили метод
     public function getByUsername(string $username): User;
 }

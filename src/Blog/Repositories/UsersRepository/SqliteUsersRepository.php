@@ -1,46 +1,80 @@
 <?php
 
-namespace GeekBrains\Blog\Repositories\UsersRepository;
+namespace GeekBrains\LevelTwo\Blog\Repositories\UsersRepository;
 
-use GeekBrains\Blog\User;
-// use GeekBrains\Blog\Name;
+use GeekBrains\LevelTwo\Blog\Commands\Arguments;
+use GeekBrains\LevelTwo\Blog\Commands\CreateUserCommand;
+use GeekBrains\LevelTwo\Blog\Exceptions\InvalidArgumentException;
+use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
+use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
+use GeekBrains\LevelTwo\Blog\User;
+use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Person\Name;
-use GeekBrains\Blog\UUID;
-// use GeekBrains\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
-use PDO;
-use PDOStatement;
+use \PDO;
+use \PDOStatement;
 
 class SqliteUsersRepository implements UsersRepositoryInterface
 {
-    public function __construct(
-        private PDO $connection
-    ) {
+    private PDO $connection;
+
+    public function __construct(PDO $connection)
+    {
+        $this->connection = $connection;
     }
+
+
     public function save(User $user): void
     {
-        // Добавили поле username в запрос
+
+        // Подготавливаем запрос
         $statement = $this->connection->prepare(
-            'INSERT INTO users (uuid, username, first_name, last_name)
-        VALUES (:uuid, :username, :first_name, :last_name)'
+            'INSERT INTO users (
+                   first_name,
+                   last_name,
+                   uuid,
+                   username)
+            VALUES (
+                    :first_name, 
+                    :last_name,
+                    :uuid,
+                    :username
+                    )
+                    ON CONFLICT (uuid) DO UPDATE SET
+                    first_name = :first_name,
+                    last_name = :last_name'
+
         );
+        // Выполняем запрос с конкретными значениями
         $statement->execute([
+            ':first_name' => $user->name()->first(),
+            ':last_name' => $user->name()->last(),
             ':uuid' => (string)$user->uuid(),
             ':username' => $user->username(),
-            ':first_name' => $user->name(),
-            ':last_name' => $user->name(),
         ]);
+
     }
+
+    // Также добавим метод для получения
+        // пользователя по его UUID
+    /**
+     * @throws UserNotFoundException
+     * @throws InvalidArgumentException
+     */
     public function get(UUID $uuid): User
     {
         $statement = $this->connection->prepare(
-            'SELECT * FROM users WHERE uuid = :uuid'
+            'SELECT * FROM users WHERE uuid = ?'
         );
-        $statement->execute([
-            ':uuid' => (string)$uuid,
-        ]);
+
+        $statement->execute([(string)$uuid]);
+
         return $this->getUser($statement, $uuid);
     }
-    // Добавили метод получения пользователя по username
+
+    /**
+     * @throws UserNotFoundException
+     * @throws InvalidArgumentException
+     */
     public function getByUsername(string $username): User
     {
         $statement = $this->connection->prepare(
@@ -49,22 +83,29 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         $statement->execute([
             ':username' => $username,
         ]);
-        return $this->getUser($statement, $username);
+
+       return $this->getUser($statement, $username);
     }
-    // Вынесли общую логику в отдельный приватный метод
-    private function getUser(PDOStatement $statement, string $username): User
+
+    /**
+     * @throws UserNotFoundException
+     * @throws InvalidArgumentException
+     */
+    private function getUser(PDOStatement $statement, string $errorString): User
     {
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-        if (false === $result) {
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
             throw new UserNotFoundException(
-                "Cannot find user: $username"
+                "Cannot find user: $errorString"
             );
         }
         // Создаём объект пользователя с полем username
         return new User(
             new UUID($result['uuid']),
+            new Name($result['first_name'], $result['last_name']),
             $result['username'],
-            new Name($result['first_name'], $result['last_name'])
         );
     }
+
+
 }

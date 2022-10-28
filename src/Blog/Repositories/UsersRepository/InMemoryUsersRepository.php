@@ -1,37 +1,34 @@
 <?php
 
-namespace GeekBrains\Blog\Repositories\UsersRepository;
+namespace GeekBrains\LevelTwo\Blog\Repositories\UsersRepository;
 
-use GeekBrains\Blog\User;
-use GeekBrains\Blog\UUID;
+use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
+use GeekBrains\LevelTwo\Blog\User;
 
 class InMemoryUsersRepository implements UsersRepositoryInterface
 {
-    /**
-     * @var User[]
-     */
+
     private array $users = [];
+
+
     public function save(User $user): void
     {
         $this->users[] = $user;
     }
-    public function get(UUID $uuid): User
+
+    /**
+     * @param int $id
+     * @return User
+     * @throws UserNotFoundException
+     */
+    public function get(int $id): User
     {
         foreach ($this->users as $user) {
-            if ((string)$user->uuid() === (string)$uuid) {
+            if ($user->id() === $id) {
                 return $user;
             }
         }
-        throw new UserNotFoundException("User not found: $uuid");
+        throw new UserNotFoundException("User not found: $id");
     }
-    // Добавили метод получения пользователя по username
-    public function getByUsername(string $username): User
-    {
-        foreach ($this->users as $user) {
-            if ($user->username() === $username) {
-                return $user;
-            }
-        }
-        throw new UserNotFoundException("User not found: $username");
-    }
+
 }

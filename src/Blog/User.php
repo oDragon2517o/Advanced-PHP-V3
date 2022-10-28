@@ -1,53 +1,72 @@
 <?php
-
-namespace GeekBrains\Blog;
+namespace GeekBrains\LevelTwo\Blog;
 
 use GeekBrains\LevelTwo\Person\Name;
 
 class User
 {
-    // private $id = 333;
-    // private $name;
-    // private $username;
-    // private Name $username;
+    private UUID $uuid;
+    private Name $name;
+    private string $username;
 
-    public function __construct(
-        private UUID $uuid,
-        private string $username,
-        private Name $name
-    ) {
-    }
-
-
-
-    public function id(): int
+    /**
+     * @param UUID $uuid
+     * @param Name $name
+     * @param string $login
+     */
+    public function __construct(UUID $uuid, Name $name, string $login)
     {
-        return $this->id;
+        $this->uuid = $uuid;
+        $this->name = $name;
+        $this->username = $login;
     }
 
+    public function __toString(): string
+    {
+        return "Юзер $this->uuid с именем $this->name и логином $this->username." . PHP_EOL;
+    }
+
+    /**
+     * @return UUID
+     */
+    public function uuid(): UUID
+    {
+        return $this->uuid;
+    }
+
+
+
+    /**
+     * @return Name
+     */
     public function name(): Name
     {
         return $this->name;
     }
 
-    public function getName()
+    /**
+     * @param Name $name
+     */
+    public function setName(Name $name): void
     {
-        return $this->name;
+        $this->name = $name;
     }
 
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-
-    public function uuid(): UUID
-    {
-        return $this->uuid;
-    }
+    /**
+     * @return string
+     */
     public function username(): string
     {
         return $this->username;
     }
+
+    /**
+     * @param string $username
+     */
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+
 }

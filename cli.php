@@ -1,29 +1,33 @@
 <?php
 
-use GeekBrains\LevelTwo\Person\Name;
-use GeekBrains\Blog\Repositories\UsersRepository\InMemoryUsersRepository;
-use GeekBrains\Blog\Repositories\UsersRepository\UserNotFoundException;
-use GeekBrains\Blog\Repositories\UsersRepository\SqliteUsersRepository;
-use GeekBrains\Blog\User;
-use GeekBrains\Blog\UUID;
-use GeekBrains\Blog\Commands\CreateUserCommand;
-use GeekBrains\Blog\Exceptions\CommandException;
-use GeekBrains\Blog\Exceptions\ArgumentsException;
-use GeekBrains\Blog\Commands\Arguments;
-use GeekBrains\Blog\Exceptions\AppException;
+use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use GeekBrains\LevelTwo\Blog\UUID;
+use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 
-require_once __DIR__ . '/vendor/autoload.php';
-$usersRepository = new SqliteUsersRepository(
-    new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-);
-$command = new CreateUserCommand($usersRepository);
+include __DIR__ . "/vendor/autoload.php";
+
+//Создаём объект подключения к SQLite
+$connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
+
+//$usersRepository = new SqliteUsersRepository($connection);
+$postsRepository = new SqlitePostsRepository($connection);
+
 try {
-    // "Заворачиваем" $argv в объект типа Arguments
+
+//$user = $usersRepository->get(new UUID('3b697686-01bf-433a-bf17-53ce84cb987b'));
+
+$post = $postsRepository->get(new UUID("fb58c755-9413-4945-b1d7-b2bd1979ae34"));
+
+echo($post);
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+/*
+$command = new CreateUserCommand($usersRepository);
+
+try {
     $command->handle(Arguments::fromArgv($argv));
-}
-// Так как мы добавили исключение ArgumentsException
-// имеет смысл обрабатывать все исключения приложения,
-// а не только исключение CommandException
-catch (AppException $e) {
-    echo "{$e->getMessage()}\n";
-}
+} catch (Exception $e) {
+    echo $e->getMessage();
+}*/

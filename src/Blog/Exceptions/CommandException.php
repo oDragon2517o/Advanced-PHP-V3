@@ -1,9 +1,8 @@
 <?php
 
-namespace GeekBrains\Blog\Exceptions;
-
-use Exception;
+namespace GeekBrains\LevelTwo\Blog\Exceptions;
 
 class CommandException extends AppException
 {
+
 }
