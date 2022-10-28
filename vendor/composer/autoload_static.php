@@ -23,7 +23,6 @@ class ComposerStaticInit82e9bc5b9b04823056dc0ab0a40f04a1
         'G' => 
         array (
             'GeekBrains\\LevelTwo\\' => 20,
-            'GeekBrains\\LevelTwo1\\' => 21,
             'GeekBrains\\' => 11,
         ),
         'F' => 
@@ -48,10 +47,6 @@ class ComposerStaticInit82e9bc5b9b04823056dc0ab0a40f04a1
         'GeekBrains\\LevelTwo\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
-        ),
-        'GeekBrains\\LevelTwo1\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src1',
         ),
         'GeekBrains\\' => 
         array (

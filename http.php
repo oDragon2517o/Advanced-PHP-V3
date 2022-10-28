@@ -3,11 +3,14 @@
 
 use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use GeekBrains\LevelTwo\Http\Actions\Users\CreateUser;
+use GeekBrains\LevelTwo\Http\Actions\Posts\CreatePosts;
 use GeekBrains\LevelTwo\Http\Actions\Users\FindByUsername;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
+use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -28,6 +31,13 @@ $routes = [
             )
         ),
     ],
+    'POST' => [
+        '/post/comment' => new CreatePosts(
+            new SqlitePostsRepository(
+                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
+            )
+        ),
+    ],
 
 ];
 
@@ -40,12 +50,12 @@ try {
 }
 
 try {
-// Пытаемся получить HTTP-метод запроса
+    // Пытаемся получить HTTP-метод запроса
     $method = $request->method();
 } catch (HttpException) {
-// Возвращаем неудачный ответ,
-// если по какой-то причине
-// не можем получить метод
+    // Возвращаем неудачный ответ,
+    // если по какой-то причине
+    // не можем получить метод
     (new ErrorResponse)->send();
     return;
 }

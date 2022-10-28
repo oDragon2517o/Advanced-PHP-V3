@@ -3,10 +3,7 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "GeekBrains\\LevelTwo1\\": "src1/",
-            "GeekBrains\\LevelTwo\\": "src/",
-            "GeekBrains\\": "src/",
-            "ALL\\": "src/"
+            "GeekBrains\\LevelTwo\\": "src/"
         }
     },
     "authors": [
