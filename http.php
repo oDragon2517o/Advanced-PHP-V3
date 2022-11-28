@@ -2,83 +2,76 @@
 
 
 use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
-use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use GeekBrains\LevelTwo\Http\Actions\Posts\CreatePost;
 use GeekBrains\LevelTwo\Http\Actions\Users\CreateUser;
-use GeekBrains\LevelTwo\Http\Actions\Posts\CreatePosts;
 use GeekBrains\LevelTwo\Http\Actions\Users\FindByUsername;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
-use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
+use GeekBrains\LevelTwo\Http\Actions\Posts\DeletePost;
+use GeekBrains\LevelTwo\Http\Actions\Likes\CreatePostLike;
+use Psr\Log\LoggerInterface;
 
-require_once __DIR__ . '/vendor/autoload.php';
+$container = require __DIR__ . '/bootstrap.php';
 
-$request = new Request($_GET, $_SERVER, file_get_contents('php://input'),);
+$logger = $container->get(LoggerInterface::class);
+
+$request = new Request(
+    $_GET,
+    $_SERVER,
+    file_get_contents('php://input'),
+);
+
+try {
+    $path = $request->path();
+} catch (HttpException $e) {
+    $logger->warning($e->getMessage());
+    (new ErrorResponse)->send();
+    return;
+}
+
+try {
+    $method = $request->method();
+} catch (HttpException $e) {
+    $logger->warning($e->getMessage());
+    (new ErrorResponse)->send();
+    return;
+}
+
 
 $routes = [
     'GET' => [
-        '/users/show' => new FindByUsername(
-            new SqliteUsersRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            )
-        ),
+        '/users/show' => FindByUsername::class,
     ],
     'POST' => [
-        '/users/create' => new CreateUser(
-            new SqliteUsersRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            )
-        ),
+        '/users/create' => CreateUser::class,
+        '/posts/create' => CreatePost::class,
+        '/post-likes/create' => CreatePostLike::class,
     ],
-    'POST' => [
-        '/post/comment' => new CreatePosts(
-            new SqlitePostsRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            )
-        ),
+    'DELETE' => [
+        '/posts' => DeletePost::class,
     ],
 
 ];
 
-
-try {
-    $path = $request->path();
-} catch (HttpException) {
-    (new ErrorResponse)->send();
+if (!array_key_exists($method, $routes) || !array_key_exists($path, $routes[$method])) {
+// Логируем сообщение с уровнем NOTICE
+    $message = "Route not found: $method $path";
+    $logger->notice($message);
+    (new ErrorResponse($message))->send();
     return;
 }
 
-try {
-    // Пытаемся получить HTTP-метод запроса
-    $method = $request->method();
-} catch (HttpException) {
-    // Возвращаем неудачный ответ,
-    // если по какой-то причине
-    // не можем получить метод
-    (new ErrorResponse)->send();
-    return;
-}
+$actionClassName = $routes[$method][$path];
 
-// Если у нас нет маршрутов для метода запроса -
-// возвращаем неуспешный ответ
-if (!array_key_exists($method, $routes)) {
-    (new ErrorResponse('Not found'))->send();
-    return;
-}
-
-// Ищем маршрут среди маршрутов для этого метода
-if (!array_key_exists($path, $routes[$method])) {
-    (new ErrorResponse('Not found'))->send();
-    return;
-}
-
-// Выбираем действие по методу и пути
-$action = $routes[$method][$path];
+$action = $container->get($actionClassName);
 
 try {
     $response = $action->handle($request);
-    $response->send();
-} catch (Exception $e) {
+} catch (AppException $e) {
+    $logger->error($e->getMessage(), ['exception' => $e]);
     (new ErrorResponse($e->getMessage()))->send();
 }
+$response->send();
