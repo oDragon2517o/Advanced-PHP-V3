@@ -4,6 +4,8 @@
 use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use GeekBrains\LevelTwo\Http\Actions\Auth\LogIn;
+use GeekBrains\LevelTwo\Http\Actions\Auth\LogOut;
 use GeekBrains\LevelTwo\Http\Actions\Posts\CreatePost;
 use GeekBrains\LevelTwo\Http\Actions\Users\CreateUser;
 use GeekBrains\LevelTwo\Http\Actions\Users\FindByUsername;
@@ -46,6 +48,8 @@ $routes = [
         '/users/show' => FindByUsername::class,
     ],
     'POST' => [
+        '/login' => LogIn::class,
+        '/logout' => LogOut::class,
         '/users/create' => CreateUser::class,
         '/posts/create' => CreatePost::class,
         '/post-likes/create' => CreatePostLike::class,
@@ -70,8 +74,11 @@ $action = $container->get($actionClassName);
 
 try {
     $response = $action->handle($request);
+
 } catch (AppException $e) {
     $logger->error($e->getMessage(), ['exception' => $e]);
     (new ErrorResponse($e->getMessage()))->send();
+    return;
 }
+
 $response->send();
